@@ -1,0 +1,9 @@
+connection with dynamodb -> config.js
+
+schema -> message.js
+
+api to get user's conversations list
+
+api to get a particular conversation
+
+store chat messages in database (server)

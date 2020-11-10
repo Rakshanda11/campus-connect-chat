@@ -1,0 +1,19 @@
+{
+  "name": "campus-connect-chat",
+  "version": "1.0.0",
+  "description": "Campus Connect Chat ",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dynamoose": "^2.3.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6",
+    "socket.io": "^3.0.1"
+  }
+}
