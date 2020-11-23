@@ -22,7 +22,6 @@ app.get("/getMessage", async(req,res,next) => {
 })
 
 const msg = {
-    "messageId": "1",
     "to": "apurv",
     "from": "xyz",
     "message": "Hello",
