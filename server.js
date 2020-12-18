@@ -1,24 +1,26 @@
-const express = require("express");
-const path = require("path");
-const http = require("http");
-const socketio = require("socket.io");
-const messageRouter = require("./routers/messageRouter");
-const chat = require("./socket/chat");
-const cors = require("cors");
-
-const corsOptions = {
-  origin: "*:*",
-};
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const http = require('http');
+const messageRouter = require('./routers/messageRouter');
+const socketio = require('socket.io');
+const chat = require('./socket/chat');
 
 const app = express();
-app.use(messageRouter);
+const jsonParser = bodyParser.json();
+const corsOptions = {
+  origin: "*:*"
+}
+
+app.use(jsonParser);
 app.use(cors(corsOptions));
-// app.options('*', cors())
+app.use(messageRouter);
+
 const server = http.createServer(app);
 const io = socketio(server);
-
-const PORT = 3100 || process.env.PORT;
-
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 chat(io);
+
+const PORT = process.env.PORT || 3001;
+
+
+server.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`))
