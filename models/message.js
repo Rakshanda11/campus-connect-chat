@@ -11,7 +11,15 @@ const messageSchema = new dynamoose.Schema({
     to: String,
     from: String,
     message: String,
-    type: String
+    type: String,
+    conversationId: {
+        type: String,
+        index: {
+            name: "Conversation-Index",
+            global: true,
+            rangeKey: "createdAt"
+        }
+    }
 }, {
     saveUnknown: true,
     timestamps: true

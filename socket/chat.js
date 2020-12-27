@@ -13,7 +13,10 @@ module.exports = function (io) {
 
             if (payload.to) {
                 // This is a personal message
-                const msgObj = new Message(payload);
+                console.log(payload.from.localeCompare(payload.to))
+                let conversationId = payload.from.localeCompare(payload.to) === 1 ? `${payload.to}$${payload.from}` :
+                    `${payload.from}$${payload.to}`;
+                const msgObj = new Message({ ...payload, conversationId });
                 await msgObj.save(err => {
                     if (err)
                         console.log("Error", err);
