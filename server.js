@@ -13,7 +13,7 @@ const corsOptions = {
 }
 
 app.use(jsonParser);
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(messageRouter);
 
 const server = http.createServer(app);
