@@ -3,10 +3,11 @@ const Message = require('../models/message');
 
 module.exports = function (io) {
     io.on("connection", socket => {
-        console.log("new socket connection");
         socket.on("join", (payload, err) => {
+            console.log("new socket connection joined");
             console.log(payload.userName)
             addUser(payload.userName, socket);
+            socket.emit("joined");
         })
 
         socket.on("send", async (payload, err) => {
