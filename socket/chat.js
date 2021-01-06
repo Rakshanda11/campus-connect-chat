@@ -2,12 +2,12 @@ const { addUser, deleteUser, getUser } = require('./socketManager');
 const Message = require('../models/message');
 
 module.exports = function (io) {
-    io.on("connection", socket => {
-        socket.on("join", (payload, err) => {
+    io.on("connection", (socket) => {
+        socket.on("join", (payload, ack) => {
             console.log("new socket connection joined");
             console.log(payload.userName)
             addUser(payload.userName, socket);
-            socket.emit("joined");
+            ack("Joined");
         })
 
         socket.on("send", async (payload, err) => {

@@ -1,14 +1,12 @@
-const AWS = require('aws-sdk')
-const dynamoose = require('dynamoose');
-
+const AWS = require("aws-sdk");
+const dynamoose = require("dynamoose");
 
 var dynamodb = new AWS.DynamoDB({
-    sessionToken: process.env.sessionToken,
-    accessKeyId: process.env.accessKey,
-    secretAccessKey: process.env.secretKey,
-    region: process.env.region
+  sessionToken: process.env.sessionToken,
+  accessKeyId: process.env.accessKey,
+  secretAccessKey: process.env.secretKey,
+  region: process.env.region,
 });
-
 
 // dynamoose.aws.sdk.config.update({
 //     accessKeyId: process.env.accessKey,
@@ -16,7 +14,14 @@ var dynamodb = new AWS.DynamoDB({
 //     region: process.env.region
 // })
 
-// dynamoose.aws.ddb.local("http://localhost:8000")
-
-dynamoose.aws.ddb.set(dynamodb);
+if (process.env.sessionToken) {
+  dynamoose.aws.ddb.set(dynamodb);
+} else {
+  dynamoose.aws.sdk.config.update({
+    accessKeyId: "abc",
+    secretAccessKey: "abc",
+    region: "ap-south-1",
+  });
+  dynamoose.aws.ddb.local("http://localhost:8000");
+}
 module.exports = dynamoose;
