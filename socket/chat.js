@@ -1,36 +1,40 @@
-const { addUser, deleteUser, getUser } = require('./socketManager');
-const Message = require('../models/message');
+const { addUser, deleteUser, getUser } = require("./socketManager");
+const Message = require("../models/message");
 
 module.exports = function (io) {
-    io.on("connection", (socket) => {
-        socket.on("join", (payload, ack) => {
-            console.log("new socket connection joined");
-            console.log(payload.userName)
-            addUser(payload.userName, socket);
-            ack("Joined");
-        })
+  io.on("connection", (socket) => {
+    socket.on("join", (payload, ack) => {
+      console.log("new socket connection joined");
+      console.log(payload.userName);
+      addUser(payload.userName, socket);
+      ack("Joined");
+    });
 
-        socket.on("send", async (payload, err) => {
+    socket.on("send", async (payload, err) => {
+      if (payload.to) {
+        // This is a personal message
+        console.log(payload.from.localeCompare(payload.to));
+        let conversationId =
+          payload.from.localeCompare(payload.to) === 1
+            ? `${payload.to}$${payload.from}`
+            : `${payload.from}$${payload.to}`;
+        const msgObj = new Message({ ...payload, conversationId });
+        await msgObj.save((err) => {
+          if (err) console.log("Error", err);
+        });
+        const sockets = getUser(payload.to);
+        sockets.forEach((userSocket) => {
+          userSocket.emit("recieve", payload);
+        });
+      }
+    });
 
-            if (payload.to) {
-                // This is a personal message
-                console.log(payload.from.localeCompare(payload.to))
-                let conversationId = payload.from.localeCompare(payload.to) === 1 ? `${payload.to}$${payload.from}` :
-                    `${payload.from}$${payload.to}`;
-                const msgObj = new Message({ ...payload, conversationId });
-                await msgObj.save(err => {
-                    if (err)
-                        console.log("Error", err);
-                });
-                const sockets = getUser(payload.to);
-                sockets.forEach(userSocket => {
-                    userSocket.emit("recieve", payload);
-                })
-            }
-        })
-
-        socket.on("disconnect", () => {
-            deleteUser(socket);
-        })
-    })
-}
+    socket.on("disconnect", () => {
+      socket.removeAllListeners("send");
+      socket.removeAllListeners("join");
+      socket.removeAllListeners("disconnect");
+      io.removeAllListeners("connection");
+      deleteUser(socket);
+    });
+  });
+};
