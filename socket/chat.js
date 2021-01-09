@@ -11,6 +11,7 @@ module.exports = function (io) {
     });
 
     socket.on("send", async (payload, err) => {
+      console.log(payload)
       if (payload.to) {
         // This is a personal message
         console.log(payload.from.localeCompare(payload.to));
@@ -30,10 +31,6 @@ module.exports = function (io) {
     });
 
     socket.on("disconnect", () => {
-      socket.removeAllListeners("send");
-      socket.removeAllListeners("join");
-      socket.removeAllListeners("disconnect");
-      io.removeAllListeners("connection");
       deleteUser(socket);
     });
   });
